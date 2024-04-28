@@ -1,0 +1,61 @@
+---
+
+- name: Install a list of packages
+  apt:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+    - ca-certificates 
+    - curl
+    - gnupg
+    ansible_connection: ssh
+    ansible_host: "{{ prop_ipaddress }}"
+  become: true
+
+- name: Add an Apt signing key from Docker
+  apt_key:
+    url: https://download.docker.com/linux/debian/gpg
+    state: present
+    keyring: /etc/apt/trusted.gpg.d/docker-apt-key.gpg
+  when: prop_os == "deb11"
+  vars:
+    ansible_connection: ssh
+    ansible_host: "{{ prop_ipaddress }}"
+  become: true
+
+- name: Add Docker repository (intel)
+  apt_repository:
+    repo: deb [arch=amd64] https://download.docker.com/linux/debian bullseye stable
+    state: present
+  when: prop_arch == "x64" and prop_os == "deb11"
+  vars:
+    ansible_connection: ssh
+    ansible_host: "{{ prop_ipaddress }}"
+  become: true
+
+- name: Install a list of packages
+  apt:
+    name: "{{ packages }}"
+    state: present
+    update_cache: yes
+  vars:
+    packages:
+    - docker-ce
+    - docker-ce-cli
+    - containerd.io
+    - apache2-utils
+    - docker-buildx-plugin
+    - docker-compose-plugin
+    ansible_connection: ssh
+    ansible_host: "{{ prop_ipaddress }}"
+  become: true
+
+# required for Ansible
+- name: Install python package
+  ansible.builtin.pip:
+    name: requests
+  vars:
+    ansible_connection: ssh
+    ansible_host: "{{ prop_ipaddress }}"
+  become: true

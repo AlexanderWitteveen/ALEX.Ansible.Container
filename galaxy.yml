@@ -1,8 +1,8 @@
 namespace: alex
 
-name: Container
+name: container
 
-version: 0.1.1
+version: 0.1.2
 ## TODO Autiomate using the build command
 
 readme: README.md
