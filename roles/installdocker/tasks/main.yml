@@ -67,8 +67,16 @@
     owner: root
     group: root
     mode: 0777
+  vars:
+    ansible_connection: ssh
+    ansible_host: "{{ prop_ipaddress }}"
+  become: true
 
 - name: restart docker
   ansible.builtin.service:
     name: docker
     state: restarted
+  vars:
+    ansible_connection: ssh
+    ansible_host: "{{ prop_ipaddress }}"
+  become: true
