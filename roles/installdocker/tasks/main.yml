@@ -59,3 +59,16 @@
     ansible_connection: ssh
     ansible_host: "{{ prop_ipaddress }}"
   become: true
+
+- name: Copy profile file
+  ansible.builtin.template:
+    src: "deamon.json.j2"
+    dest: "/etc/docker/daemon.json"
+    owner: root
+    group: root
+    mode: 0777
+
+- name: restart docker
+  ansible.builtin.service:
+    name: docker
+    state: restarted
